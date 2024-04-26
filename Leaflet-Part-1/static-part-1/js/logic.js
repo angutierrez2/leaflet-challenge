@@ -7,6 +7,18 @@ d3.json(queryUrl).then(function (data) {
   createFeatures(data.features);
 });
 
+// Create markers whose size increases with magnitude and color with depth
+function createMarker(feature, latlng) {
+  return L.circleMarker(latlng, {
+      radius: markerSize(feature.properties.mag),
+      fillColor: markerColor(feature.geometry.coordinates[2]),
+      color:"#000",
+      weight: 0.5,
+      opacity: 0.5,
+      fillOpacity: 1
+  });
+}
+
 function createFeatures(earthquakeData) {
 
   // Define a function that we want to run once for each feature in the features array.
@@ -63,4 +75,22 @@ function createMap(earthquakes) {
     collapsed: false
   }).addTo(myMap);
 
+
+  // Add legend to map
+  legend.addTo(myMap);
+
+  // Increase marker size based on magnitude
+  function markerSize(magnitude) {
+    return magnitude * 5;
+  }
+
+  // Change marker color based on depth
+  function markerColor(depth) {
+    return depth > 90 ? '#d73027' :
+          depth > 70 ? '#fc8d59' :
+          depth > 50 ? '#fee08b' :
+          depth > 30 ? '#d9ef8b' :
+          depth > 10 ? '#91cf60' :
+                       '#1a9850' ;
+  }
 }
